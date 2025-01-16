@@ -1,31 +1,33 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
-//  'MaterialApp' widget as the root
-void main() => runApp(MaterialApp(
-
-  debugShowCheckedModeBanner: false,
-
-  // set 'StatelessTemplate' widget as the home screen
-  // means 'StatelessTemplate' will be the first screen shown in the app
-  home: StatelessTemplate(),
-
-));// end 'main' function
+import 'components/error_app.dart';
+import 'components/my_app.dart';
+import 'database_connections/firebase_init.dart';
 
 
-// Stateless widgets are immutable & do not have state that changes over time
-class StatelessTemplate extends StatelessWidget {
-  // Constructor for 'StatelessTemplate', with a 'key' parameter for widget identification
-  const StatelessTemplate({super.key});
+// 'MaterialApp' widget as the root
+// the 'Firebase' initialization should be completed before running the app
+void main() async {
+  // ensure Flutter binding is initialized before any asynchronous code
+  WidgetsFlutterBinding.ensureInitialized(); // ensure binding before Firebase initialization
 
-  // Override 'build' method to describe part of user interface represented by this widget
-  @override
-  Widget build(BuildContext context) {
+  // try to initialize 'Firebase' with the default options for the current platform
+  try {
+    // wait for Firebase to be initialized before executing other code
+    // initialize Firebase using the FirebaseInitializer class
+    FirebaseApp firebaseApp = await FirebaseInitializer.initializeFirebase();
 
-    // return a 'Scaffold' widget, which is a top-level container for Material design layout
-    return Scaffold(
-      body: Center(child: Text("Hello World")),
-    );
+    // print initialization status
+    print("Firebase initialized successfully yay! :-) : $firebaseApp");
 
-  }// end 'build' override method
+    // run the Flutter application with 'MaterialApp' as the root widget
+    runApp(MyApp());
 
-}// end 'StatelessTemplate' class
+  } catch (e) {
+    // if Firebase initialization fails, print error and run the error app
+    print("Error initializing Firebase: $e");
+    runApp(ErrorApp(errorMessage: e.toString()));
+
+  } // end 'CATCH'
+
+} // end 'main' asynchronous function
