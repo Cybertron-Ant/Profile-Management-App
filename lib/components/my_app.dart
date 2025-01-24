@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:towers/components/profile_screen.dart';
+import '../blocs/profile/profile_bloc.dart';
+import '../core/service_locator.dart';
 
-// 'MyApp' widget to be run if Firebase initializes successfully
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -13,12 +15,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-
-      // set 'StatelessTemplate' widget as the home screen
-      // means 'StatelessTemplate' will be the first screen shown in the app
-      home: ProfileScreen(),
-
+      home: BlocProvider(
+        create: (_) => getIt<ProfileBloc>(),
+        child: const ProfileScreen(),
+      ),
     );
-  } // end 'build' overridden method
-
-} // end 'MyApp' widget class
+  }
+}
